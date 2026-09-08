@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "Restaurant Management System API",
+    "_postman_id": "restaurant-management-demo",
+    "description": "Postman collection for the Django restaurant management project",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    }
+  ],
+  "item": [
+    {
+      "name": "API Root",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Menu",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/menu/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "menu",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Tables",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/tables/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tables",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Reservation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customer_name\": \"Sarah Khan\",\n  \"customer_email\": \"sarah@example.com\",\n  \"table\": 3,\n  \"reservation_date\": \"2026-09-09\",\n  \"reservation_time\": \"19:00:00\",\n  \"number_of_guests\": 4,\n  \"status\": \"confirmed\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/reservations/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "reservations",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"table\": 3,\n  \"status\": \"pending\",\n  \"items\": [\n    {\n      \"menu_item\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"menu_item\": 2,\n      \"quantity\": 2\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/orders/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "orders",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Low Stock",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/inventory/low-stock/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "inventory",
+            "low-stock",
+            ""
+          ]
+        }
+      }
+    },
+    {
+      "name": "Dashboard",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/dashboard/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "dashboard",
+            ""
+          ]
+        }
+      }
+    }
+  ]
+}
