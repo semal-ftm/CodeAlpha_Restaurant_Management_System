@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     api_root,
     dashboard,
+    me,
     CategoryViewSet,
     InventoryItemViewSet,
     MenuItemViewSet,
@@ -24,5 +25,6 @@ router.register("inventory", InventoryItemViewSet)
 urlpatterns = [
     path("", api_root),
     path("dashboard/", dashboard),
+    path("me/", me),
     path("", include(router.urls)),
 ]

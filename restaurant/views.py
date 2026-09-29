@@ -13,6 +13,13 @@ from .models import (
     Reservation,
     Order,
 )
+from .permissions import (
+    ROLE_LABELS,
+    RoleLimitedFieldsMixin,
+    can_set_order_status,
+    capabilities,
+    get_role,
+)
 from .serializers import (
     CategorySerializer,
     InventoryItemSerializer,
@@ -37,7 +44,22 @@ def api_root(request):
             "orders": "/api/orders/",
             "inventory": "/api/inventory/",
             "dashboard": "/api/dashboard/",
+            "me": "/api/me/",
         }
+    })
+
+
+@api_view(["GET"])
+def me(request):
+    """The signed-in staff member and what their role is allowed to do."""
+    user = request.user
+    role = get_role(user)
+    return Response({
+        "username": user.username,
+        "name": user.get_full_name() or user.username,
+        "role": role,
+        "role_label": ROLE_LABELS[role],
+        "can": capabilities(role),
     })
 
 
@@ -81,7 +103,7 @@ class InventoryItemViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(items, many=True).data)
 
 
-class MenuItemViewSet(viewsets.ModelViewSet):
+class MenuItemViewSet(RoleLimitedFieldsMixin, viewsets.ModelViewSet):
     queryset = MenuItem.objects.select_related("category").prefetch_related("recipe_items__inventory_item")
     serializer_class = MenuItemSerializer
 
@@ -101,7 +123,7 @@ class RecipeItemViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeItemSerializer
 
 
-class RestaurantTableViewSet(viewsets.ModelViewSet):
+class RestaurantTableViewSet(RoleLimitedFieldsMixin, viewsets.ModelViewSet):
     queryset = RestaurantTable.objects.all()
     serializer_class = RestaurantTableSerializer
 
@@ -111,7 +133,7 @@ class RestaurantTableViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(tables, many=True).data)
 
 
-class ReservationViewSet(viewsets.ModelViewSet):
+class ReservationViewSet(RoleLimitedFieldsMixin, viewsets.ModelViewSet):
     queryset = Reservation.objects.select_related("table")
     serializer_class = ReservationSerializer
 
@@ -137,6 +159,13 @@ class OrderViewSet(viewsets.ModelViewSet):
             return Response(
                 {"error": f"Invalid status. Use one of: {', '.join(valid_statuses.keys())}"},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        role = get_role(request.user)
+        if not can_set_order_status(role, new_status):
+            return Response(
+                {"detail": f"{ROLE_LABELS[role]} accounts can't mark orders as {new_status}."},
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         order.status = new_status

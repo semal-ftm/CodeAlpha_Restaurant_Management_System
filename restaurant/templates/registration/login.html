@@ -1,0 +1,93 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Sign in · TableMint</title>
+  <script>
+    try { var t = localStorage.getItem("tm-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'restaurant/app.css' %}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M11 8v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V8M13 8v16M22 19V8a4 4 0 0 0-4 4v5c0 1 1 2 2 2h2Zm0 0v5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+</head>
+<body class="auth-body">
+<main class="auth">
+  <section class="auth-form-side">
+    <div class="auth-brand">
+      <div class="brand-mark"><svg class="brand-cloche" viewBox="0 0 24 24" aria-hidden="true"><g class="bm-steam"><path d="M9 7.2q-1.4-1.8 0-3.6"/><path d="M12 6.4q-1.4-1.8 0-3.6"/><path d="M15 7.2q-1.4-1.8 0-3.6"/></g><circle cx="12" cy="9" r="1.2" fill="#fff"/><path d="M4 17.2a8 7.6 0 0 1 16 0z" fill="#fff"/><rect x="2.5" y="17.2" width="19" height="2.2" rx="1.1" fill="#fff"/></svg></div>
+      <div><div class="auth-brand-name">TableMint</div><div class="auth-brand-sub">Restaurant Operations</div></div>
+    </div>
+
+    <form method="post" class="auth-card" id="loginForm" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next|default:'/' }}">
+      <h1>Welcome back <span class="emoji" aria-hidden="true">👋</span></h1>
+      <p class="auth-lead">Sign in with your staff account to start service.</p>
+
+      {% for message in messages %}
+        <div class="form-error show" role="alert"><svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>{{ message }}</span></div>
+      {% endfor %}
+      {% if form.errors %}
+        <div class="form-error show" role="alert"><svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>That username and password don't match. Check them and try again.</span></div>
+      {% endif %}
+
+      <label class="field">
+        <span>Username</span>
+        <div class="input-ic">
+          <svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+          <input class="input" type="text" name="username" autocomplete="username" autocapitalize="none" required autofocus value="{{ form.username.value|default:'' }}" {% if form.errors %}aria-invalid="true"{% endif %}>
+        </div>
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <div class="input-ic">
+          <svg class="i i-sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input class="input" type="password" name="password" id="pw" autocomplete="current-password" required {% if form.errors %}aria-invalid="true"{% endif %}>
+          <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password" aria-pressed="false">Show</button>
+        </div>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-lg btn-block" id="loginBtn">Sign in</button>
+      <p class="auth-hint">Forgot your password? Ask your manager to reset it.</p>
+
+      <div class="auth-roles" aria-label="Staff roles">
+        <div><span class="emoji">🧑‍💼</span><b>Manager</b><small>Everything, including stock, menu and admin</small></div>
+        <div><span class="emoji">🧑‍🍳</span><b>Kitchen</b><small>Cook tickets and mark dishes sold out</small></div>
+        <div><span class="emoji">🛎️</span><b>Waiter</b><small>Orders, tables and reservations</small></div>
+      </div>
+    </form>
+  </section>
+
+  <aside class="auth-art">
+    <div class="hero-blobs"><span></span><span></span><span></span></div>
+    <div class="auth-art-copy">
+      <span class="hero-eyebrow"><span class="pulse"></span>Front of house · Kitchen · Management</span>
+      <h2>Every table, ticket and plate in one calm view.</h2>
+    </div>
+    <div class="auth-scene">{% include "restaurant/partials/scene.html" %}</div>
+    <span class="auth-tip"><span class="emoji">✨</span> Psst… tap the cloche, the lamp or the candle</span>
+  </aside>
+</main>
+<script src="{% static 'restaurant/fx.js' %}" defer></script>
+<script>
+  (function () {
+    var pw = document.getElementById("pw"), t = document.getElementById("pwToggle");
+    t.addEventListener("click", function () {
+      var show = pw.type === "password";
+      pw.type = show ? "text" : "password";
+      t.textContent = show ? "Hide" : "Show";
+      t.setAttribute("aria-pressed", show);
+      t.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    });
+    document.getElementById("loginForm").addEventListener("submit", function () {
+      var b = document.getElementById("loginBtn");
+      b.disabled = true; b.textContent = "Signing in…";
+    });
+  })();
+</script>
+</body>
+</html>

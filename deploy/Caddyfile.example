@@ -1,0 +1,10 @@
+# Caddy gets and renews a free HTTPS certificate automatically.
+# 1. Point your domain's DNS at this machine and open ports 80 and 443.
+# 2. Replace the domain below, save as "Caddyfile", and run:  caddy run
+# 3. Run the app with --behind-proxy in init_env (DJANGO_BEHIND_PROXY=1) and start it with waitress:
+#       waitress-serve --listen=127.0.0.1:8000 --trusted-proxy=127.0.0.1 --trusted-proxy-headers=x-forwarded-proto restaurant_system.wsgi:application
+
+tablemint.example.com {
+	encode gzip
+	reverse_proxy 127.0.0.1:8000
+}

@@ -9,6 +9,14 @@
     {
       "key": "base_url",
       "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "username",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
     }
   ],
   "item": [
@@ -144,5 +152,20 @@
         }
       }
     }
-  ]
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{username}}",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "{{password}}",
+        "type": "string"
+      }
+    ]
+  }
 }
